@@ -44,6 +44,10 @@
   grid-column: 1;
   grid-row: 1;
 }
+.house_details{
+  padding-bottom: 15;
+  
+}
 
 @keyframes logo-swim {
   from {

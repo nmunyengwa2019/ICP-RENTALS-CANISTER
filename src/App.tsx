@@ -1,12 +1,26 @@
-import { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import './App.css';
 import azleLogo from './assets/azle_logo.svg';
 import azleShadow from './assets/azle_shadow.png';
 import reactLogo from './assets/react.svg';
 import viteLogo from './assets/vite.svg';
 import { backend } from './declarations/backend';
+import ImageUploading, { ImageListType } from "react-images-uploading";
 
 function App() {
+  const [images, setImages] = useState([]);
+  const maxNumber = 69;
+  const onChange = (
+    imageList: ImageListType,
+    addUpdateIndex: number[] | undefined
+  ) => {
+    // data for submit
+    console.log(imageList, addUpdateIndex);
+    setImages(imageList as never[]);
+  };
+
+  //..................................................
+
   const [count, setCount] = useState<number | undefined>();
   const [loading, setLoading] = useState(false);
 
@@ -39,38 +53,71 @@ function App() {
     fetchCount();
   }, []);
 
+  
+
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-        <a
-          href="https://github.com/demergent-labs/azle"
-          target="_blank"
-        >
-          <span className="logo-stack">
-            <img
-              src={azleShadow}
-              className="logo azle-shadow"
-              alt="azle logo"
-            />
-            <img src={azleLogo} className="logo azle" alt="Azle logo" />
-          </span>
-        </a>
-      </div>
-      <h1>Vite + React + Azle</h1>
-      <div className="card">
-        <button onClick={increment} style={{ opacity: loading ? 0.5 : 1 }}>
-          Count is {count}
-        </button>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite, React, and Azle logos to learn more
-      </p>
+      <h1>Enter House Details | <a href=""><span style={{color:'green'}}>View Houses</span></a></h1>
+      <form className='house_details'>
+  <label>
+    Location:
+    <input type="text" name="location" />
+  </label>
+  <label>
+    Rooms:
+    <input type="text" name="rooms" />
+  </label>
+  <label>
+    Bedrooms:
+    <input type="text" name="bedrooms" />
+  </label>
+  <label>
+    Bathrooms:
+    <input type="text" name="bathrooms" />
+  </label>
+  
+</form>
+      <ImageUploading
+        multiple
+        value={images}
+        onChange={onChange}
+        maxNumber={maxNumber}
+      >
+        {({
+          imageList,
+          onImageUpload,
+          onImageRemoveAll,
+          onImageUpdate,
+          onImageRemove,
+          isDragging,
+          dragProps
+        }) => (
+          // write your building UI
+          <div className="upload__image-wrapper">
+            <button
+              style={isDragging ? { color: "red" } : undefined}
+              onClick={onImageUpload}
+              {...dragProps}
+            >
+              Click or Drop here
+            </button>
+            &nbsp;
+            <button onClick={onImageRemoveAll}>Remove all images</button>
+            {imageList.map((image, index) => (
+              <div key={index} className="image-item">
+                <img src={image.dataURL} alt="" width="100" />
+                <div className="image-item__btn-wrapper">
+                  <button onClick={() => onImageUpdate(index)}>Update</button>
+                  <button onClick={() => onImageRemove(index)}>Remove</button>
+                </div>
+              </div>
+              
+            ))}
+          </div>
+          
+        )}
+      </ImageUploading>
+      <button style={{color:'black',backgroundColor:'greenyellow'}}>Submit</button>
     </div>
   );
 }
